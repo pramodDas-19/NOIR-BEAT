@@ -33,10 +33,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking }) => {
   const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setMobileMenuOpen(false);
-    const target = document.querySelector(href);
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth" });
-    }
+
+    // Delay slightly so mobile drawer collapse doesn't disrupt scroll destination calculation
+    setTimeout(() => {
+      const target = document.querySelector(href);
+      if (target) {
+        const headerOffset = 80;
+        const elementPosition = target.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth",
+        });
+      }
+    }, 120);
   };
 
   return (
@@ -135,7 +146,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking }) => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: idx * 0.05 }}
                   onClick={(e) => handleScrollTo(e, link.href)}
-                  className="flex items-center justify-between text-lg font-bold uppercase tracking-[0.15em] text-[#E0E0E0] hover:text-[#D6A84F] py-2 border-b border-white/[0.04] transition-colors"
+                  className="flex items-center justify-between text-lg font-bold uppercase tracking-[0.15em] text-[#E0E0E0] hover:text-[#D6A84F] active:text-[#D6A84F] py-2.5 border-b border-white/[0.04] transition-colors cursor-pointer touch-manipulation active:scale-[0.98]"
                 >
                   <span>{link.label}</span>
                   <span className="text-xs font-mono text-[#D6A84F]/60">0{idx + 1}</span>
